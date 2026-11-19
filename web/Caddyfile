@@ -1,0 +1,37 @@
+{
+	admin off
+	servers {
+		# Railway's edge terminates TLS; trust its X-Forwarded-* headers so the
+		# backend builds https:// links for saved assets.
+		trusted_proxies static 0.0.0.0/0 ::/0
+	}
+}
+
+:{$PORT} {
+	encode zstd gzip
+
+	# Health check for Railway, open without login.
+	handle /healthz {
+		respond "ok" 200
+	}
+
+	handle {
+		basic_auth {
+			{$BASIC_AUTH_USERNAME} {$BASIC_AUTH_HASH}
+		}
+
+		# Only the routes the app itself uses reach the backend.
+		@backend path /generate-code /api/* /local-assets/*
+		handle @backend {
+			reverse_proxy {$BACKEND_URL} {
+				flush_interval -1
+			}
+		}
+
+		handle {
+			root * /srv
+			try_files {path} /index.html
+			file_server
+		}
+	}
+}

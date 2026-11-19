@@ -1,0 +1,19 @@
+# Local test of the Railway layout: same images, same variables.
+services:
+  backend:
+    build: ./backend
+    environment:
+      PORT: "7001"
+    volumes:
+      - s2c-data:/data
+  web:
+    build: ./web
+    depends_on: [backend]
+    environment:
+      PORT: "8080"
+      BACKEND_URL: http://backend:7001
+      BASIC_AUTH_PASSWORD: ${BASIC_AUTH_PASSWORD:?set BASIC_AUTH_PASSWORD}
+    ports:
+      - "8080:8080"
+volumes:
+  s2c-data:
