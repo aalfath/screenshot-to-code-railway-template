@@ -5,8 +5,11 @@ Railway's private network may use IPv6 and local tools use IPv4. Uvicorn's
 """
 import os
 import socket
+import sys
 
 import uvicorn
+
+sys.path.insert(0, "/app")
 
 port = int(os.environ.get("PORT", "7001"))
 sock = socket.socket(socket.AF_INET6, socket.SOCK_STREAM)
@@ -17,7 +20,6 @@ sock.set_inheritable(True)
 
 config = uvicorn.Config(
     "main:app",
-    app_dir="/app",
     proxy_headers=True,
     forwarded_allow_ips="*",
     ws_max_size=64 * 1024 * 1024,
