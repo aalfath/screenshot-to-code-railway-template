@@ -17,6 +17,7 @@ sock.set_inheritable(True)
 
 config = uvicorn.Config(
     "main:app",
+    app_dir="/app",
     proxy_headers=True,
     forwarded_allow_ips="*",
     ws_max_size=64 * 1024 * 1024,
