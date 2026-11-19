@@ -28,6 +28,7 @@ RUN python -m venv /opt/poetry \
     && (rm -r /var/lib/apt/lists/* /root/.cache 2>/dev/null || true)
 
 COPY start.sh /usr/local/bin/s2c-backend
+COPY serve.py /usr/local/bin/s2c-serve.py
 RUN chmod 755 /usr/local/bin/s2c-backend
 
 # Design systems, saved assets and run logs live here: mount a volume on /data.
